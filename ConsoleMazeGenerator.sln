@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26730.16
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleMazeGenerator", "ConsoleMazeGenerator\ConsoleMazeGenerator.csproj", "{C474B0E9-DE41-4714-B0AC-BFB5BED57AF4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleMazeGenerator", "ConsoleMazeGenerator\ConsoleMazeGenerator.csproj", "{16267710-A914-4077-A06E-2E21A5403AFD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,15 +11,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{C474B0E9-DE41-4714-B0AC-BFB5BED57AF4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C474B0E9-DE41-4714-B0AC-BFB5BED57AF4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C474B0E9-DE41-4714-B0AC-BFB5BED57AF4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C474B0E9-DE41-4714-B0AC-BFB5BED57AF4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{16267710-A914-4077-A06E-2E21A5403AFD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{16267710-A914-4077-A06E-2E21A5403AFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{16267710-A914-4077-A06E-2E21A5403AFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{16267710-A914-4077-A06E-2E21A5403AFD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {C29DE3C3-B0BB-4AE2-87B6-A2FC390AFEC8}
+		SolutionGuid = {60F6EC54-C03B-4FFF-9809-C4B1F1CC516C}
 	EndGlobalSection
 EndGlobal

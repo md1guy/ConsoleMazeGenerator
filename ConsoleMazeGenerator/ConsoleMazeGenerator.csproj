@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{C474B0E9-DE41-4714-B0AC-BFB5BED57AF4}</ProjectGuid>
+    <ProjectGuid>{16267710-A914-4077-A06E-2E21A5403AFD}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>ConsoleMazeGenerator</RootNamespace>
     <AssemblyName>ConsoleMazeGenerator</AssemblyName>
