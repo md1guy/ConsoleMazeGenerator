@@ -12,8 +12,8 @@ namespace ConsoleMazeGenerator
 
         static void Main(string[] args)
         {
-            int height = 25;
-            int width = 25;
+            int height = 50;
+            int width = 50;
 
             Maze maze = new Maze(height, width);
 
@@ -25,11 +25,11 @@ namespace ConsoleMazeGenerator
                 {
                     if (convertedMaze[i, j])
                     {
-                        Console.Write("█");
+                        Console.Write("██");
                     }
                     else
                     {
-                        Console.Write("░");
+                        Console.Write("░░");
                     }
                 }
                 Console.WriteLine();
@@ -41,10 +41,12 @@ namespace ConsoleMazeGenerator
 
     class Maze
     {
+        static Random random = new Random();
+
         int height;
         int width;
 
-        List<Edge> graph = new List<Edge>();
+        HashSet<Edge> graph = new HashSet<Edge>();
         Node[,] nodes;
 
         public bool[,] convertedGraph;
@@ -113,17 +115,18 @@ namespace ConsoleMazeGenerator
             }
         }
 
-        List<Edge> MST(List<Edge> edges)
+        HashSet<Edge> MST(HashSet<Edge> edges)
         {
-            List<Edge> edgesInMST    = new List<Edge>();
-            List<Edge> possibleEdges = new List<Edge>();
-            List<Node> nodesInMST    = new List<Node>();
+            HashSet<Edge> edgesInMST    = new HashSet<Edge>();
+            HashSet<Edge> possibleEdges = new HashSet<Edge>();
+            HashSet<Node> nodesInMST    = new HashSet<Node>();
 
             nodesInMST.Add(nodes[0, 0]);
 
             while (edgesInMST.Count != nodes.Length - 1)
             {
                 possibleEdges = FindEdges(nodesInMST);
+                List<Edge> possibleEdgesToMST = new List<Edge>();
 
                 foreach (Edge edge in possibleEdges)
                 {
@@ -139,20 +142,27 @@ namespace ConsoleMazeGenerator
                         continue;
                     }
 
-                    edgesInMST.Add(edge);
-                    nodesInMST.Add(edge.nodeA);
-                    nodesInMST.Add(edge.nodeB);
-
-                    break;
+                    possibleEdgesToMST.Add(edge);
                 }
+
+                if (possibleEdgesToMST.Count > 0)
+                {
+                    Edge edgeToMST = possibleEdgesToMST.ElementAt(random.Next(possibleEdgesToMST.Count));
+
+                    edgesInMST.Add(edgeToMST);
+                    nodesInMST.Add(edgeToMST.nodeA);
+                    nodesInMST.Add(edgeToMST.nodeB);
+                }
+
+                else break;
             }
 
             return edgesInMST;
         }
 
-        List<Edge> FindEdges(List<Node> nodes)
+        HashSet<Edge> FindEdges(HashSet<Node> nodes)
         {
-            List<Edge> edges = new List<Edge>();
+            HashSet<Edge> edges = new HashSet<Edge>();
 
             foreach (Node node in nodes)
             {
@@ -168,7 +178,7 @@ namespace ConsoleMazeGenerator
             return edges;
         }
 
-        bool[,] ConvertToBoolean(List<Edge> edges)
+        bool[,] ConvertToBoolean(HashSet<Edge> edges)
         {
             int width = (this.width % 2 == 0) ? this.width + 1 : this.width;
             int height = (this.height % 2 == 0) ? this.height + 1 : this.height;
