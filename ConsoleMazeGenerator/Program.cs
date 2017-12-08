@@ -12,8 +12,8 @@ namespace ConsoleMazeGenerator
 
         static void Main(string[] args)
         {
-            int height = 50;
-            int width = 50;
+            int height = 100;
+            int width = 100;
 
             Maze maze = new Maze(height, width);
 
@@ -56,21 +56,14 @@ namespace ConsoleMazeGenerator
             this.height = height;
             this.width = width;
 
-            //fill nodes array
             CreateNodes();
-
-            //add edges to a maze
             AddEdges();
 
-            //get MST
             graph = MST(graph);
-
-            //create maze boolean
             convertedGraph = ConvertToBoolean(graph);
-
-
         }
 
+        //fill nodes array
         void CreateNodes()
         {
             int width = (this.width % 2 == 0) ? this.width + 1 : this.width;
@@ -92,6 +85,7 @@ namespace ConsoleMazeGenerator
             }
         }
 
+        //add edges to a maze
         void AddEdges()
         {
             for (int i = 0; i < nodes.GetLength(0); i++)
@@ -101,20 +95,21 @@ namespace ConsoleMazeGenerator
                     if (i < nodes.GetLength(0) - 1)
                     {
                         Edge edge = new Edge(nodes[i, j], nodes[i + 1, j]);
-                        edge.GetCoords();
+
                         graph.Add(edge);
                     }
 
                     if (j < nodes.GetLength(1) - 1)
                     {
                         Edge edge = new Edge(nodes[i, j], nodes[i, j + 1]);
-                        edge.GetCoords();
+
                         graph.Add(edge);
                     }
                 }
             }
         }
 
+        //get MST
         HashSet<Edge> MST(HashSet<Edge> edges)
         {
             HashSet<Edge> edgesInMST    = new HashSet<Edge>();
@@ -153,13 +148,12 @@ namespace ConsoleMazeGenerator
                     nodesInMST.Add(edgeToMST.nodeA);
                     nodesInMST.Add(edgeToMST.nodeB);
                 }
-
-                else break;
             }
 
             return edgesInMST;
         }
 
+        //get available edges for a node
         HashSet<Edge> FindEdges(HashSet<Node> nodes)
         {
             HashSet<Edge> edges = new HashSet<Edge>();
@@ -178,6 +172,7 @@ namespace ConsoleMazeGenerator
             return edges;
         }
 
+        //create boolean maze
         bool[,] ConvertToBoolean(HashSet<Edge> edges)
         {
             int width = (this.width % 2 == 0) ? this.width + 1 : this.width;
@@ -220,9 +215,11 @@ namespace ConsoleMazeGenerator
             {
                 this.nodeA = nodeA;
                 this.nodeB = nodeB;
+
+                GetCoords();
             }
 
-            public void GetCoords()
+            void GetCoords()
             {
                 this.i = nodeA.i + (nodeB.i - nodeA.i) / 2;
                 this.j = nodeA.j + (nodeB.j - nodeA.j) / 2;
@@ -252,4 +249,3 @@ namespace ConsoleMazeGenerator
         }
     }
 }
-
