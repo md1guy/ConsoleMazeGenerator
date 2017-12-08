@@ -12,73 +12,19 @@ namespace ConsoleMazeGenerator
 
         static void Main(string[] args)
         {
-            int height = 49;
-            int width = 49;
+            int height = 25;
+            int width = 25;
 
-            Cell[,] maze = new Cell[height, width];
+            Maze maze = new Maze(height, width);
 
-            List<Cell> cellsInMaze = new List<Cell>();
+            bool[,] convertedMaze = maze.convertedGraph;
 
-            int numOfEdgesInMaze = 0;
-            int numOfCells = (height - 1) / 2 + (width + 1) / 2;
-
-            for (int i = 0; i < height; i ++)
+            for (int i = 0; i < convertedMaze.GetLength(0); i++)
             {
-                for (int j = 0; j < width; j ++)
-                {/*
-                    if (i % 2 == 0 && j % 2 == 0)
-                    {
-                        maze[i, j] = new Cell(1, i, j);
-                    }
-                    else
-                    {
-                        maze[i, j] = new Cell(0, i, j);
-                    }*/
-
-                    maze[i, j] = new Cell(0, i, j);
-                }
-            }
-
-            cellsInMaze.Add(maze[0, 0]);
-
-            while (numOfEdgesInMaze < numOfCells)
-            {
-                for (int i = 0; i < height; i += 2)
+                for (int j = 0; j < convertedMaze.GetLength(1); j++)
                 {
-                    for (int j = 0; j < width; j += 2)
-                    {
-                        if (cellsInMaze.Contains(maze[i, j]))
-                        {
-                            List<Cell> neighbours = maze[i, j].GetNeighbours(maze, cellsInMaze);
-
-                            if (neighbours.Count > 0)
-                            {
-
-                                Cell neighbour = neighbours.ElementAt(random.Next(neighbours.Count));
-                                Cell middleNeighbour = maze[neighbour.i - (neighbour.i - i), neighbour.j - (neighbour.j - j)];
-
-                                neighbour.type = 1;
-                                middleNeighbour.type = 1;
-
-                                cellsInMaze.Add(neighbour);
-                                cellsInMaze.Add(middleNeighbour);
-
-                                maze[neighbour.i, neighbour.j].type = 1;
-                                maze[middleNeighbour.i, middleNeighbour.j].type = 1;
-
-                                numOfEdgesInMaze++;
-                            }
-                        }
-                    }
-                }
-            }
-
-            for (int i = 0; i < height; i ++)
-            {
-                for (int j = 0; j < width; j++)
-                {
-                    if (maze[i, j].type == 0) Console.Write("█");
-                    else Console.Write("░");
+                    if (convertedMaze[i, j]) Console.Write("░");
+                    else Console.Write("█");
                 }
                 Console.WriteLine();
             }
@@ -87,49 +33,104 @@ namespace ConsoleMazeGenerator
         }
     }
 
-    class Cell
+    class Maze
     {
-        public int type = 0; // 0 for empties, 1 for nodes and 2 for edges
-        public int i;
-        public int j;
+        int height;
+        int width;
 
-        List<Cell> neighbours = new List<Cell>();
+        List<Edge> graph = new List<Edge>();
+        Node[,] nodes;
 
-        public Cell(int type, int j, int i)
+        public bool[,] convertedGraph;
+
+        public Maze(int height, int width)
         {
-            this.type = type;
-            this.i = i;
-            this.j = j;
+            this.height = height;
+            this.width = width;
+
+            int tmpWidth  = (this.width  % 2 == 0) ? this.width  + 1 : this.width;
+            int tmpHeight = (this.height % 2 == 0) ? this.height + 1 : this.height;
+            int nodesI    = (tmpHeight + 1) / 2;
+            int nodesJ    = (tmpWidth  + 1) / 2;
+
+            nodes = new Node[nodesI, nodesJ];
+
+            //fill nodes array
+            for (int k = 0, i = 0; i < nodesI; i++)
+            {
+                for (int z = 0, j = 0; j < nodesJ; j++)
+                {
+                    nodes[i, j] = new Node(k, z);
+                    z += 2;
+                }
+
+                k += 2;
+            }
+
+            //add edges to a maze
+            for (int i = 0; i < nodes.GetLength(0); i++)
+            {
+                for (int j = 0; j < nodes.GetLength(1); j++)
+                {
+                    if (i < nodes.GetLength(0) - 1)
+                    {
+                        Edge edge = new Edge(nodes[i, j], nodes[i + 1, j]);
+                        edge.GetCoords();
+                        graph.Add(edge);
+                    }
+
+                    if (j < nodes.GetLength(1) - 1)
+                    {
+                        Edge edge = new Edge(nodes[i, j], nodes[i, j + 1]);
+                        edge.GetCoords();
+                        graph.Add(edge);
+                    }
+                }
+            }
+
+            //create maze boolean
+            convertedGraph = new bool[tmpHeight, tmpWidth];
+            convertedGraph.Fill(false);
+
+            foreach (Edge edge in graph)
+            {
+                convertedGraph[edge.nodeA.i, edge.nodeA.j] = true;
+                convertedGraph[edge.i, edge.j]             = true;
+                convertedGraph[edge.nodeB.i, edge.nodeB.j] = true;
+            }
         }
 
-        public List<Cell> GetNeighbours(Cell[,] maze, List<Cell> verticesInMaze)
+        class Node
         {
-            int i = this.i;
-            int j = this.j;
+            public int i;
+            public int j;
 
-            List<Cell> neighbours = new List<Cell>();
-
-            if (i > 1 && !verticesInMaze.Contains(maze[i - 2, j]))
+            public Node(int i, int j)
             {
-                neighbours.Add(maze[i - 2, j]);
+                this.i = i;
+                this.j = j;
+            }
+        }
+
+        class Edge
+        {
+            public Node nodeA;
+            public Node nodeB;
+
+            public int i;
+            public int j;
+
+            public Edge(Node nodeA, Node nodeB)
+            {
+                this.nodeA = nodeA;
+                this.nodeB = nodeB;
             }
 
-            if (i < maze.GetLength(0) - 1 && !verticesInMaze.Contains(maze[i + 2, j]))
+            public void GetCoords()
             {
-                neighbours.Add(maze[i + 2, j]);
+                this.i = nodeA.i + (nodeB.i - nodeA.i) / 2;
+                this.j = nodeA.j + (nodeB.j - nodeA.j) / 2;
             }
-
-            if (j > 1 && !verticesInMaze.Contains(maze[i, j - 2]))
-            {
-                neighbours.Add(maze[i, j - 2]);
-            }
-
-            if (j < maze.GetLength(1) - 1 && !verticesInMaze.Contains(maze[i, j + 2]))
-            {
-                neighbours.Add(maze[i, j + 2]);
-            }
-
-            return neighbours;
         }
     }
 
