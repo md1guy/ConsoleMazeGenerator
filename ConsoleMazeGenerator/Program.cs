@@ -23,8 +23,14 @@ namespace ConsoleMazeGenerator
             {
                 for (int j = 0; j < convertedMaze.GetLength(1); j++)
                 {
-                    if (convertedMaze[i, j]) Console.Write("░");
-                    else Console.Write("█");
+                    if (convertedMaze[i, j])
+                    {
+                        Console.Write("░");
+                    }
+                    else
+                    {
+                        Console.Write("█");
+                    }
                 }
                 Console.WriteLine();
             }
@@ -48,14 +54,33 @@ namespace ConsoleMazeGenerator
             this.height = height;
             this.width = width;
 
-            int tmpWidth  = (this.width  % 2 == 0) ? this.width  + 1 : this.width;
-            int tmpHeight = (this.height % 2 == 0) ? this.height + 1 : this.height;
-            int nodesI    = (tmpHeight + 1) / 2;
-            int nodesJ    = (tmpWidth  + 1) / 2;
+            //fill nodes array
+            CreateNodes();
+
+            //get MST
+            void MST()
+            {
+
+            }
+
+            //add edges to a maze
+            AddEdges();
+
+            //create maze boolean
+            convertedGraph = ConvertToBoolean(graph);
+
+
+        }
+
+        void CreateNodes()
+        {
+            int width = (this.width % 2 == 0) ? this.width + 1 : this.width;
+            int height = (this.height % 2 == 0) ? this.height + 1 : this.height;
+            int nodesI = (height + 1) / 2;
+            int nodesJ = (width + 1) / 2;
 
             nodes = new Node[nodesI, nodesJ];
 
-            //fill nodes array
             for (int k = 0, i = 0; i < nodesI; i++)
             {
                 for (int z = 0, j = 0; j < nodesJ; j++)
@@ -66,8 +91,10 @@ namespace ConsoleMazeGenerator
 
                 k += 2;
             }
+        }
 
-            //add edges to a maze
+        void AddEdges()
+        {
             for (int i = 0; i < nodes.GetLength(0); i++)
             {
                 for (int j = 0; j < nodes.GetLength(1); j++)
@@ -87,17 +114,24 @@ namespace ConsoleMazeGenerator
                     }
                 }
             }
+        }
 
-            //create maze boolean
-            convertedGraph = new bool[tmpHeight, tmpWidth];
+        bool[,] ConvertToBoolean(List<Edge> edges)
+        {
+            int width = (this.width % 2 == 0) ? this.width + 1 : this.width;
+            int height = (this.height % 2 == 0) ? this.height + 1 : this.height;
+
+            convertedGraph = new bool[height, width];
             convertedGraph.Fill(false);
 
             foreach (Edge edge in graph)
             {
                 convertedGraph[edge.nodeA.i, edge.nodeA.j] = true;
-                convertedGraph[edge.i, edge.j]             = true;
+                convertedGraph[edge.i, edge.j] = true;
                 convertedGraph[edge.nodeB.i, edge.nodeB.j] = true;
             }
+
+            return convertedGraph;
         }
 
         class Node
