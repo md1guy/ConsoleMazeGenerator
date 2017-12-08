@@ -25,11 +25,11 @@ namespace ConsoleMazeGenerator
                 {
                     if (convertedMaze[i, j])
                     {
-                        Console.Write("░");
+                        Console.Write("█");
                     }
                     else
                     {
-                        Console.Write("█");
+                        Console.Write("░");
                     }
                 }
                 Console.WriteLine();
@@ -57,14 +57,11 @@ namespace ConsoleMazeGenerator
             //fill nodes array
             CreateNodes();
 
-            //get MST
-            void MST()
-            {
-
-            }
-
             //add edges to a maze
             AddEdges();
+
+            //get MST
+            graph = MST(graph);
 
             //create maze boolean
             convertedGraph = ConvertToBoolean(graph);
@@ -114,6 +111,61 @@ namespace ConsoleMazeGenerator
                     }
                 }
             }
+        }
+
+        List<Edge> MST(List<Edge> edges)
+        {
+            List<Edge> edgesInMST    = new List<Edge>();
+            List<Edge> possibleEdges = new List<Edge>();
+            List<Node> nodesInMST    = new List<Node>();
+
+            nodesInMST.Add(nodes[0, 0]);
+
+            while (edgesInMST.Count != nodes.Length - 1)
+            {
+                possibleEdges = FindEdges(nodesInMST);
+
+                foreach (Edge edge in possibleEdges)
+                {
+                    int connections = 0;
+
+                    foreach (Node node in nodesInMST)
+                    {
+                        if (edge.nodeA == node || edge.nodeB == node) connections++;
+                    }
+
+                    if (connections != 1)
+                    {
+                        continue;
+                    }
+
+                    edgesInMST.Add(edge);
+                    nodesInMST.Add(edge.nodeA);
+                    nodesInMST.Add(edge.nodeB);
+
+                    break;
+                }
+            }
+
+            return edgesInMST;
+        }
+
+        List<Edge> FindEdges(List<Node> nodes)
+        {
+            List<Edge> edges = new List<Edge>();
+
+            foreach (Node node in nodes)
+            {
+                foreach (Edge edge in this.graph)
+                {
+                    if (edge.nodeA == node || edge.nodeB == node)
+                    {
+                        edges.Add(edge);
+                    }
+                }
+            }
+
+            return edges;
         }
 
         bool[,] ConvertToBoolean(List<Edge> edges)
