@@ -12,32 +12,44 @@ namespace ConsoleMazeGenerator
 
         static void Main(string[] args)
         {
-            int height = 50;
+            int height = 50; //if too big and live visualization is enabled, will be throwed exception TODO: try-catch for it and try to fix that
             int width = 50;
 
             bool visualize = false;
+
+            Console.WindowWidth = width * 2 + 10;
 
             Maze maze = new Maze(height, width, visualize);
 
             bool[,] convertedMaze = maze.convertedGraph;
 
-            if (visualize) Console.WriteLine();
 
-            for (int i = 0; i < convertedMaze.GetLength(0); i++)
+            if (!visualize)
             {
-                for (int j = 0; j < convertedMaze.GetLength(1); j++)
+                for (int i = 0; i < convertedMaze.GetLength(0); i++)
                 {
-                    if (convertedMaze[i, j])
+                    for (int j = 0; j < convertedMaze.GetLength(1); j++)
                     {
-                        Console.Write("██");
+                        if (convertedMaze[i, j])
+                        {
+                            Console.Write("██");
+                        }
+                        else
+                        {
+                            Console.Write("░░");
+                        }
                     }
-                    else
-                    {
-                        Console.Write("░░");
-                    }
+                    Console.WriteLine();
                 }
-                Console.WriteLine();
             }
+
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.SetCursorPosition(0, 0);
+            Console.Write("██");
+
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.SetCursorPosition(width * 2, height);
+            Console.Write("██");
 
             Console.ReadLine();
         }
@@ -123,7 +135,7 @@ namespace ConsoleMazeGenerator
             HashSet<Edge> possibleEdges = new HashSet<Edge>();
             HashSet<Node> nodesInMST = new HashSet<Node>();
 
-            nodesInMST.Add(nodes[0, 0]);
+            nodesInMST.Add(nodes[random.Next(nodes.GetLength(0)), random.Next(nodes.GetLength(1))]);
 
             while (edgesInMST.Count != nodes.Length - 1)
             {
@@ -159,14 +171,14 @@ namespace ConsoleMazeGenerator
                     {
                         if (edges.Contains(edgeToMST))
                         {
-                            Console.SetCursorPosition(edgeToMST.i, edgeToMST.j);
-                            Console.WriteLine("█");
+                            Console.SetCursorPosition(edgeToMST.j * 2, edgeToMST.i);
+                            Console.WriteLine("██");
                         }
 
                         else
                         {
-                            Console.SetCursorPosition(edgeToMST.nodeA.i, edgeToMST.nodeB.j);
-                            Console.WriteLine(" ");
+                            Console.SetCursorPosition(edgeToMST.nodeA.j * 2, edgeToMST.nodeB.i);
+                            Console.WriteLine("░░");
                         }
                     }
                 }
@@ -226,8 +238,8 @@ namespace ConsoleMazeGenerator
 
                 if (visualize)
                 {
-                    Console.SetCursorPosition(i, j);
-                    Console.WriteLine("█");
+                    Console.SetCursorPosition(j * 2, i);
+                    Console.WriteLine("██");
                 }
             }
         }
